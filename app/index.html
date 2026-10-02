@@ -4,9 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Calling app</title>
+    <link rel="stylesheet" href="/css/style.css">
+
     <script src="/js/socket.io.js"></script>
+    <script src="/js/main.js" defer></script>
 </head>
 <body>
-    <h1>Hello</h1>
+    <!-- Join screen -->
+    <section id="join-screen" class="join-screen">
+        <form id="join-form" class="join-card">
+            <h1 class="join-title">Video Call</h1>
+            <p class="join-subtitle">Pick a name so others can call you.</p>
+            <input id="username" class="input" type="text" placeholder="Your name" maxlength="32" autocomplete="off" required>
+            <button type="submit" class="btn btn-primary">Join</button>
+            <p id="join-error" class="error" role="alert"></p>
+        </form>
+    </section>
+
+    <main class="main-container" hidden>
+        <aside class="caller-list-wrapper">
+            <h1 class="caller-list-heading h-front">Contacts</h1>
+            <p class="me">You are <strong id="my-name"></strong></p>
+            <ul id="allusers" class="caller-list"></ul>
+            <p id="no-users" class="empty">No one else is online yet. Open this page in another tab or device to test.</p>
+        </aside>
+
+        <section class="video-call-container">
+            <div class="video-stage">
+                <video id="remote-video" class="remote-video" autoplay playsinline></video>
+                <div id="stage-status" class="stage-status">Select a contact to start a call</div>
+                <video id="local-video" class="local-video" autoplay playsinline muted></video>
+            </div>
+
+            <div class="call-controls">
+                <button id="toggle-mic" class="ctrl" type="button" title="Mute microphone" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+                </button>
+                <button id="toggle-cam" class="ctrl" type="button" title="Turn camera off" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                </button>
+                <button id="end-call" class="ctrl ctrl-danger" type="button" title="End call" disabled>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85a1 1 0 0 1-1.41-.02L.29 13.08a1 1 0 0 1 0-1.41C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67a1 1 0 0 1 0 1.41l-2.48 2.48a1 1 0 0 1-1.41.02 11.27 11.27 0 0 0-2.67-1.85 1 1 0 0 1-.56-.9v-3.1A15.9 15.9 0 0 0 12 9z"/></svg>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Incoming call dialog -->
+    <dialog id="incoming-call" class="incoming-call">
+        <p class="incoming-label">Incoming video call</p>
+        <p id="incoming-name" class="incoming-name"></p>
+        <div class="incoming-actions">
+            <button id="reject-call" class="btn btn-danger" type="button">Decline</button>
+            <button id="accept-call" class="btn btn-success" type="button">Accept</button>
+        </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
